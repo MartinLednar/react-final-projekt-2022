@@ -6,6 +6,8 @@ import "./navigation.styles.scss";
 import CartIcon from "../../components/cart-icon/cart-icon.component";
 import CartDropdown from "../../components/cart-dropdown/cart-dropdown.component";
 
+import { NavigationContainer } from "./navigation.styles";
+
 import { UserContext } from "../../contexts/user.context";
 import { CartContext } from "../../contexts/cart.context";
 
@@ -15,7 +17,7 @@ const Navigation = () => {
 
   return (
     <Fragment>
-      <div className="navigation">
+      <NavigationContainer>
         <Link className="logo-container" to="/">
           <CrwnLogo className="logo" />
         </Link>
@@ -36,7 +38,7 @@ const Navigation = () => {
           <CartIcon />
         </div>
         {openDropdown && <CartDropdown />}
-      </div>
+      </NavigationContainer>
       <Outlet />
     </Fragment>
   );
