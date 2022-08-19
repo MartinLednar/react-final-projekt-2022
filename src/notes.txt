@@ -1,0 +1,23 @@
+//Co je generator funkcia?
+ Generator funkcia sa pouziva na to ked chceme mat kontrolu
+ nad jednotlivymi krokmi vo funkcii (Nieco ako async-await).
+ Na to sa pouziva slovicko /yield/ ktore vrati hodnotu ktora
+je za nim a pozastavi exekuciu funkcie a vrati objekt {value: any, done: bool}
+Ked chceme pokracovat v exekucii zavolame genFunc.next(). Ak 
+chceme vratit aj na konci funkcie nejaku hodnotu jednoducho
+pouzijeme return. Mozeme ju priradit aj premennej bez toho
+aby sa spustila. Redux-saga pouziva generator funkcie. 
+
+/Deklaracia
+
+function* myGenFunc(i) {
+    yield i;
+    yield i + 10;
+    return 25;
+}
+
+const g = myGenFunc(10);
+
+g.next() ==> {value: 10, done: false}
+g.next() ==> {value: 25, done: false}
+g.next() ==> {value: 25, done: true}
