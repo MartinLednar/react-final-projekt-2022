@@ -21,3 +21,6 @@ const g = myGenFunc(10);
 g.next() ==> {value: 10, done: false}
 g.next() ==> {value: 25, done: false}
 g.next() ==> {value: 25, done: true}
+
+
+//Serverless functions - funkcia ktora ma jednu ulohu a zije na cloude (API request, send mail, make payment)
