@@ -1,8 +1,8 @@
-import { createAction, withMatcher, Action, ActionWithPayload } from "../../utils/reducer/reducer.utils";
+import { createAction, withMatcher, ActionWithPayload } from "../../utils/reducer/reducer.utils";
 import { CategoryItem } from "../categories/category.types";
 import { CART_ACTION_TYPES, CartItem } from "./cart.types";
 
-const addCartItem = (cartItems: CartItem[], productToAdd: CategoryItem): CartItem[] => {
+const addCartItem = (cartItems: CartItem[] = [], productToAdd: CategoryItem): CartItem[] => {
   const isItemInCart = cartItems.find((item) => item.id === productToAdd.id);
 
   if (isItemInCart) {
@@ -45,7 +45,7 @@ export const decreaseItemFromCart = (cartItems: CartItem[], productToDecrease: C
 };
 
 export const deleteItemFromCart = (cartItems: CartItem[], productToDelete: CartItem) => {
-  const newCartItems = addCartItem(cartItems, productToDelete);
+  const newCartItems = deleteCartItem(cartItems, productToDelete);
   return setCartItems(newCartItems);
 };
 

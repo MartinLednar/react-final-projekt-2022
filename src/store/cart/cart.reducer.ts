@@ -3,7 +3,7 @@ import { setOpenDropdown, setCartItems } from "./cart.action";
 import { AnyAction } from "redux";
 
 export type CartState = {
-  readonly openDropdown: boolean;
+  readonly openDropdown: Boolean;
   readonly cartItems: CartItem[];
   readonly totalQuantity: number;
   readonly totalPrice: number;
