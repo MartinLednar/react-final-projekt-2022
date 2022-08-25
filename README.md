@@ -6,7 +6,7 @@ technologies we were implementing them on this website. For example, at first we
 Redux-Saga. It was really different learning experience as oppose to other courses where you build just one small and simple project for each new technology that
 you are currently learning. I really enjoyed this course and building this project.
 
-## Live website : https://reactfinal2022.netlify.app
+#### Live website : https://reactfinal2022.netlify.app
 
 # Learned and used technologies
 - React.js
