@@ -1,6 +1,7 @@
 import "./cart-item.styles.scss";
+import { memo } from "react"; //memoizuje komponent aby sa rerendroval len ked sa mu zmenia data
 
-const CartItem = ({ cartItem }) => {
+const CartItem = memo(({ cartItem }) => {
   const { name, imageUrl, price, quantity } = cartItem;
 
   return (
@@ -15,6 +16,6 @@ const CartItem = ({ cartItem }) => {
       </div>
     </div>
   );
-};
+});
 
 export default CartItem;

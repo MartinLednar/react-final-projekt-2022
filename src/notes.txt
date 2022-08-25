@@ -24,3 +24,310 @@ g.next() ==> {value: 25, done: true}
 
 
 //Serverless functions - funkcia ktora ma jednu ulohu a zije na cloude (API request, send mail, make payment)
+
+
+//QraphQL
+Namiesto roznych ciest (/products, /auth...) je iba 1 cesta /QraphQL
+Potom specifikujeme query v ktorom povieme co chceme
+Je nahrada Reduxu
+
+Query - ked je get requesty
+Mutation - ked je delete, update, create request
+
+import { gql, useQuery } from "@apollo/client"; //gql - aby sme mohli pisat query syntax
+
+const COLLECTIONS = gql`
+  query {
+    collections {
+      id
+      title
+      items {
+        id
+        name
+        price
+        imageUrl
+      }
+    }
+  }
+`;
+
+const { loading, error, data } = useQuery(COLLECTIONS);
+
+
+//Apollo client
+frontend client ktory nam umoznuje posielat requesty a prijimat responsy z GraphQl
+
+const client = new ApolloClient({
+  uri: "https://crwn-clothing.com/",
+  cache: new InMemoryCache(),
+});
+
+
+//Redux vs. GraphQl
+GraphQl musi mat backend na komunikaciu s frontendom
+
+
+//Code splitting - hovorime reactu a webpacku aby rozdelil nas kod na urcite casti, cize ked sme na domovskej stranke aby nam neposielal celi js.bundle ale iba subory pre domovsku stranku atd.
+
+/Kod v App.js/
+
+//Dynamic imports
+Moderny js. 
+
+Synchronne importovanie- caka sa kym sa vsetky importy uspesne vykonaju a az potom sa pokracuje
+
+import Home from "./routes/home/home.component";
+
+
+Dynamicky import - asynchronny
+const Home = lazy(() => import("./routes/home/home.component"));
+
+//Lazy
+On the page that actually renders and it sees that this is a lazy import is when in the browser
+the moment it encounters this it's going to start requesting for this component from our server that is hosting all of our code.
+
+//Suspense
+In order to use it, we need to use react suspense because the suspense is essentially
+saying, hey, I know that you are currently trying to fetch something in suspended animation, meaning it's asynchronous, some component while you're waiting what do you want me to render? = fallback attribute for loading animation.
+
+<Suspense>
+    <Routes>
+    </Routes>
+</Suspense>
+
+//Realfavicongenerator.net
+
+
+//Service workers - programmable proxy - request ide najprv k nim a on sa pozre ci ma vyzadovane data v cache pamati (WEB API: Cache API) ak nie tak sa urobi request klasicky na server. Takze ak je offline ale stranka je v cache tak sa vyrendruje
+//Umoznuje push notifikacie...
+
+
+//Testing
+Subor ktory bezi iba v development prostredi
+
+/Typy testov
+1. Unit tests - najbeznejsie, najlahsie sa implementuju a velmi dolezite. Testuju individualne funkcie a classy.
+
+2. Integration tests - Ako rozne kusky kodu spolu pracuju (ako 2 funkcie spolu pracuju)
+
+3. Automation tests (UI tests) - mozu to robit ludia alebo boti => skusa sa UI ci vsetko funguje (tlacitka atd.)
+
+/Testing libraries
+Vsetky pouzivaju BDD
+BDD - Behavioral driven development - povieme co funkcia robi a co ocakavame ze urobi. 
+
+Co obsahuju:
+1.Assertion library obsahuje assertyion funkcie ktore overuju ci premenne maju ocakavanu hodnotu
+2.Test runner - umoznuje spustat nase testy
+3. Mock, Spies and Stubb - Spies - informacie o funkciach (kolkokrat a kym boli volane), Stubbing - nahradza vybrane funckie funkciou aby sa zaistil predpokladany vysledok
+Mocks - napodobnuje chovanie nejakej funkcie aby sa vyskusalo ako pracuje
+4.Code coverage - ake % roznych casti kodu v nasom projekte nemaju testy
+
+
+Snapshot testing - vyrendruje sa komponent a ak nastane nejaka zmena v komponente => nieco zmenime tak test zlyha a musime urobit novy snapshot
+
+Enzyme - pomaha nam pisat lepsie testy pre React komponenty
+
+
+1. Unit testy - pure funkcie (neovplyvnuje ine casti kodu, maju input a nieco vratia (React komponenty)). Netestuju contract (spojenie) medzi aplikaciou a DB...
+
+2. Integration testy - spajanie komponentov aby sme zistili ako spolupracuju (aj requesty k DB). Su pomalsie, tazsie na napisanie.
+
+3. Automation testy - (end to end testing). UI testy ktore prebiehaju v prehliadaci (alebo podobnom) a simuluju uzivatela. Su najtazsie na napisanie.
+
+Mai by sme vytvorit 2 rozne testovacie procesy 1 na unit a integration testy a 2 na Automation testy. Automation test trva dlhsie.
+
+Mozme pouzit DOM, Puppeteer, jsdom(najrychlejsi a najjednoduchsi).
+
+/Test
+
+it(/Nazov testu (string)/, funckia(samotny test));
+
+
+//Testy 1
+
+const googleDatabase = ["cats.com", "souprecepises.com", "flowers.com", "animals.com", "catpictures.com", "myfavouritecats.com", '"myfavouritecats2.com"'];
+
+const googleSearch = (searchInput, db) => {
+  const matches = db.filter((website) => website.includes(searchInput));
+
+  return matches.length > 3 ? matches.slice(0, 3) : matches;
+};
+
+module.exports = googleSearch;
+
+
+dbMock = ["dog.com", "cheesepuff.com", "mtv.com", "dogpictures.com"];
+
+//Group similar tests together
+describe("Google Search", () => {
+  it("Silly test", () => {
+    expect("hello").toBe("hello");
+    // googleSearch("testtest", dbMock);
+  });
+
+  it("Searching google", () => {
+    expect(googleSearch("testtest", dbMock)).toEqual([]);
+    expect(googleSearch("dog", dbMock)).toEqual(["dog.com", "dogpictures.com"]);
+  });
+
+  it("Work with undefined and null input", () => {
+    expect(googleSearch(undefined, dbMock)).toEqual([]);
+    expect(googleSearch(null, dbMock)).toEqual([]);
+  });
+
+  it("Only 3 results", () => {
+    expect(googleSearch(".com", dbMock).length).toEqual(3);
+  });
+});
+
+//////////////////////////////////////////////////////////////////////////////////
+const getPeoplePromise = (fetch) => {
+  return fetch("https://pokeapi.co/api/v2/pokemon/")
+    .then((res) => res.json())
+    .then((data) => {
+      return {
+        count: data.count,
+        results: data.results,
+      };
+    });
+};
+
+const getPeople = async (fetch) => {
+  const getResponse = await fetch("https://pokeapi.co/api/v2/pokemon/");
+  const data = await getResponse.json();
+  return {
+    count: data.count,
+    results: data.results,
+  };
+};
+
+module.exports = { getPeople, getPeoplePromise };
+
+//Asynchronner testy - vracaju promise. Na to aby test pockal na vykonanie asynchronnej funkcie a neukazoval Pass ked dostane pending promise mozeme pouzit return alebo done argument a zavolat done po assertions.
+//Dalsim dolezitim krokom je expect.assertions(pocet ocakavanych assertions)
+// it("Calls Pokemon API to get pokemons", () => {
+//   expect.assertions(1); //overi ci sa vykonal dany pocet assertions kolko ocakavame
+//   return pokemon.getPeople(fetch).then((data) => {
+//     expect(data.count).toEqual(1154);
+//   });
+// });
+
+// // it("Calls Pokemon API to get pokemons", (done) => {
+// //   expect.assertions(1);
+// //   pokemon.getPeople(fetch).then((data) => {
+// //     expect(data.count).toEqual(1154);
+// //     done();
+// //   });
+// // });
+
+// it("Calls Pokemon API to get pokemons with promise", () => {
+//   expect.assertions(2);
+//   return pokemon.getPeoplePromise(fetch).then((data) => {
+//     expect(data.count).toEqual(1154);
+//     expect(data.results.length).toBeGreaterThan(5);
+//   });
+// });
+
+//Mocks and Spies
+//Mock - moze predstierat ze nejaka funkcia bezi (fetch calls trvaju dlho)
+//Spie - umoznuje zistit co sa dialo s funkciou
+
+it("Get people returns count and results", () => {
+  const mockFetch = jest.fn().mockReturnValue(
+    Promise.resolve({
+      json: () =>
+        Promise.resolve({
+          count: 1154,
+          results: [0, 1, 2, 3, 4, 5],
+        }),
+    })
+  );
+
+  expect.assertions(4);
+  return pokemon.getPeoplePromise(mockFetch).then((data) => {
+    expect(mockFetch.mock.calls.length).toBe(1); //Spie
+    expect(mockFetch).toBeCalledWith("https://pokeapi.co/api/v2/pokemon/"); //Spie
+    expect(data.count).toEqual(1154);
+    expect(data.results.length).toBeGreaterThan(5);
+  });
+});
+
+
+//Testy 2
+//Enzyme - na testovanie komponentov
+ 
+ 
+//setupTests.js
+import { configure } from "enzyme";
+import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
+
+configure({ adapter: new Adapter() });
+
+
+//Test na card component
+import Card from "./Card";
+import React from "react";
+import { shallow } from "enzyme";
+
+//enzyme -rendrovat komponenty v testovacom prostredi
+//shallow - shallow render - vyrendruje 1 komponent. Vacsinou pouzivame iba toto
+
+//mount - ked nejaky komponent vyuziva DOM API (querySelector) alebo lifecycle funkciu (componentDidMount). Vyzaduje dostupnost DOM API (jsDom) a doslova ho vyrendruje.
+
+//render - pouziva sa na rendrovanie komponentov do statickeho HTML. (vyuziva Cheerio)
+
+//Snapshot testing - urobi 'fotku' vyrendorvaneho komponentu a vzdy ked sa nieco zmeni tak sa test nepodari
+//ak chceme snapshot updatnut tak po zlyhani /w/ a potom /u/ pre novy snapshot
+
+//npm test -- --coverage --watchAll aby sme videli ktore subory nemaju test subory
+
+it("Expect to render Card component", () => {
+  expect(shallow(<Card />)).toMatchSnapshot();
+});
+
+
+//Simulacia kliku a pracovanie so stavom
+it("Correctly increments the counter", () => {
+  const mockColor = "red";
+  const wrapper = shallow(<CounterButton color={mockColor} />);
+
+  wrapper.find('[id="counter"]').simulate("click");
+  wrapper.find('[id="counter"]').simulate("click");
+  expect(wrapper.state()).toEqual({ count: 2 });
+  expect(wrapper.props().color).toEqual("red");
+});
+
+
+
+//spusti sa pred uplne 1. testom
+beforeEach(() => {
+  const mockProps = {
+    onRequestRobots: jest.fn(),
+    robots: [],
+    searchField: "",
+    isPending: false,
+  };
+  wrapper = shallow(<MainPage {...mockProps} />);
+});
+
+//ziskanie funkcie z komponentu
+it("Filters robots correctly 2", () => {
+  const mockProps3 = {
+    onRequestRobots: jest.fn(),
+    robots: [
+      {
+        id: 3,
+        name: "John",
+        email: "john@gmail.com",
+      },
+    ],
+    searchField: "a",
+    isPending: false,
+  };
+  const filteredRobots = [];
+  const wrapper3 = shallow(<MainPage {...mockProps3} />);
+  expect(wrapper3.instance().filterRobots()).toEqual(filteredRobots);
+});
+
+//na testovanie async API fetch requestov sa moze pouzit package Nock. supertest
